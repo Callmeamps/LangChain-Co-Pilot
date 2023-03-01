@@ -1,5 +1,6 @@
-from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
+from langchain import OpenAI, Cohere, HuggingFaceHub, ConversationChain, LLMChain, PromptTemplate
 from langchain.chains.conversation.memory import ConversationalBufferWindowMemory
+import streamlit as st
 from config import myKeys
 
 
@@ -28,5 +29,21 @@ chatgpt_chain = LLMChain(
     memory=ConversationalBufferWindowMemory(k=2),
 )
 
-output = chatgpt_chain.predict(human_input=input("Enter Your Prompt: "))
-print(output)
+appModels = {
+    "open_ai_llm": OpenAI(temperature=0),
+    "cohere_llm": Cohere(temperature=0, model="command-xlarge-20221108"),
+    "huggingface_llm": HuggingFaceHub(repo_id="facebook/opt-1.3b", model_kwargs={"temperature":1})
+}
+
+
+
+st.title("LangChain Chat Test")
+st.markdown("""
+Simple LangChain App
+""")
+
+st.sidebar.header("User Inputs")
+selected_model = st.sidebar.selectbox("Model", list(appModels))
+
+#output = chatgpt_chain.predict(human_input=input("Enter Your Prompt: "))
+#print(output)
